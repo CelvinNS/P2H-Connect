@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidStatus(status) {
+      return status in ['siap_operasi', 'stop_operasi', 'perlu_perbaikan'];
+    }
+
+    function isValidP2H(data) {
+      return data.unitName is string && data.unitName.size() > 0 && data.unitName.size() <= 100 &&
+             data.operatorName is string && data.operatorName.size() > 0 && data.operatorName.size() <= 150 &&
+             data.date is string && data.date.size() <= 50 &&
+             isValidStatus(data.status);
+    }
+
+    // P2H Inspections collection
+    match /p2h_inspections/{inspectionId} {
+      // Anyone accessing the app can read inspection reports
+      allow read: if true;
+
+      // Allow creating inspection with valid schema
+      allow create: if isValidId(inspectionId) && isValidP2H(incoming());
+
+      // Allow updating inspection (e.g. adding foreman signature) with valid schema
+      allow update: if isValidId(inspectionId) && isValidP2H(incoming());
+
+      // Allow deletion with valid id
+      allow delete: if isValidId(inspectionId);
+    }
+
+    // P2H Users collection for multi-role access control
+    match /p2h_users/{userId} {
+      allow read: if true;
+      allow write: if isValidId(userId);
+    }
+
+    // Fleet roster collection
+    match /p2h_fleet_roster/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Connection test collection
+    match /p2h_test/{docId} {
+      allow read: if true;
+    }
+
+    // Global default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

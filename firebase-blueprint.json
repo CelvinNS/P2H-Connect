@@ -1,0 +1,149 @@
+{
+  "entities": {
+    "P2HInspection": {
+      "title": "P2HInspection",
+      "description": "Dokumen pemeriksaan sebelum pengoperasian (P2H) unit kendaraan dan alat berat tambang",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID unik dokumen P2H"
+        },
+        "documentNo": {
+          "type": "string",
+          "description": "Nomor registrasi dokumen P2H"
+        },
+        "unitName": {
+          "type": "string",
+          "description": "Nomor lambung unit kendaraan (contoh: DT-208)"
+        },
+        "unitType": {
+          "type": "string",
+          "description": "Jenis unit (contoh: Dump Truck Hino 500)"
+        },
+        "operatorName": {
+          "type": "string",
+          "description": "Nama lengkap operator yang melakukan pemeriksaan"
+        },
+        "date": {
+          "type": "string",
+          "description": "Tanggal inspeksi dalam format YYYY-MM-DD"
+        },
+        "shift": {
+          "type": "string",
+          "description": "Shift kerja (contoh: Shift 1 (Siang))"
+        },
+        "kmHm": {
+          "type": "string",
+          "description": "Angka odometer KM atau HM alat"
+        },
+        "items": {
+          "type": "object",
+          "description": "Status 27 item pemeriksaan (baik/rusak dan catatan)"
+        },
+        "operatorSignature": {
+          "type": "string",
+          "description": "Data URL gambar tanda tangan digital operator"
+        },
+        "operatorSignedAt": {
+          "type": "string",
+          "description": "Waktu penandatanganan operator"
+        },
+        "foremanName": {
+          "type": "string",
+          "description": "Nama lengkap foreman / pengawas K3"
+        },
+        "foremanSignature": {
+          "type": "string",
+          "description": "Data URL gambar tanda tangan digital pengawas"
+        },
+        "foremanSignedAt": {
+          "type": "string",
+          "description": "Waktu verifikasi atasan"
+        },
+        "foremanNotes": {
+          "type": "string",
+          "description": "Catatan tambahan atau disposisi perbaikan dari pengawas"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["siap_operasi", "stop_operasi", "perlu_perbaikan"],
+          "description": "Status kelayakan operasional unit"
+        },
+        "userId": {
+          "type": "string",
+          "description": "ID unik pengguna yang melakukan pengisian P2H"
+        },
+        "userCode": {
+          "type": "string",
+          "description": "Kode unik pengguna (misal: OPR-102, ADM-001)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp pembuatan data"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp update terakhir"
+        }
+      },
+      "required": ["unitName", "operatorName", "date", "status"]
+    },
+    "P2HUser": {
+      "title": "P2HUser",
+      "description": "Data akun pengguna sistem P2H dengan kontrol hak akses (Admin dan User Biasa)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID unik sistem pengguna"
+        },
+        "userCode": {
+          "type": "string",
+          "description": "Kode unik akun (misal: ADM-001, OPR-102)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Nama lengkap pengguna"
+        },
+        "email": {
+          "type": "string",
+          "description": "Alamat email terdaftar atau akun Google"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "user"],
+          "description": "Tingkat hak akses: admin (kontrol penuh) atau user (operator form & riwayat unit pribadi)"
+        },
+        "department": {
+          "type": "string",
+          "description": "Departemen kerja (PRODUKSI, PLANT, SHE, dsb)"
+        },
+        "authProvider": {
+          "type": "string",
+          "enum": ["google", "code"],
+          "description": "Metode pendaftaran / autentikasi"
+        },
+        "pin": {
+          "type": "string",
+          "description": "Kode PIN keamanan opsional"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Waktu pendaftaran akun"
+        }
+      },
+      "required": ["userCode", "name", "role", "authProvider"]
+    }
+  },
+  "firestore": {
+    "/p2h_inspections/{inspectionId}": {
+      "schema": "P2HInspection",
+      "description": "Koleksi seluruh formulir inspeksi P2H unit tambang PT. Putra Sarana Transborneo"
+    },
+    "/p2h_users/{userId}": {
+      "schema": "P2HUser",
+      "description": "Koleksi seluruh akun pengguna dan hak akses"
+    }
+  }
+}

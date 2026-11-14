@@ -1,0 +1,8 @@
+{
+  "name": "Sistem P2H Online & Tanda Tangan Digital",
+  "description": "Aplikasi form pemeriksaan sebelum pengoperasian (P2H) interaktif dengan tanda tangan digital dan cetak PDF standar",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
